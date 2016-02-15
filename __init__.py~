@@ -49,7 +49,7 @@ doorRelease2PressLoopCount = -1
 doorReleasePressLoopMax = 100
 doorReleaseCount = -1
 
-print("Program Started. Press CTRL+C to exit")
+print("Here we go! Press CTRL+C to exit")
 try:
     while 1:
         # Door Bell Button Presses

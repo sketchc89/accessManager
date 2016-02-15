@@ -1,0 +1,26 @@
+#! /bin/sh
+# /etc/init.d/accessManager
+
+case "$1" in
+  start)
+    echo "Starting accessManager"
+    # run application you want to start
+    python /home/pi/accessManager/__init__.py &
+    ;;
+  stop)
+    echo "Stopping accessManager"
+    # kill application you want to stop
+    sudo kill $(ps aux | grep “python /home/pi/accessManager/__init__.py” | awl ‘{print $2}’)
+    ;;
+  kill)
+    echo "Killing accessManager"
+    # kill application you want to stop
+    sudo killall -9 python
+    ;;
+  *)
+    echo "Usage: /etc/init.d/accessManager {start|stop|kill}"
+    exit 1
+    ;;
+esac
+
+exit 0
