@@ -3,10 +3,10 @@ import RPi.GPIO as GPIO
 import time
 
 # Pin Definitons:
-butDoorBell1Pin = 6         # pin 31
-butDoorBell2Pin = 12        # pin 32
-butDoorRelease1Pin = 13     # pin 33
-butDoorRelease2Pin = 16     # pin 36
+butDoorBell1Pin = 17        # pin 11
+butDoorBell2Pin = 27        # pin 13
+butDoorRelease1Pin = 22     # pin 15
+butDoorRelease2Pin = 23     # pin 16
 doorBellLed1Pin = 4         # pin 7  / Relay CH1
 doorBellLed2Pin = 18        # pin 12 / Relay CH2
 doorBellBuzzerPin = 27      # pin 13 / Relay CH3
