@@ -5,6 +5,7 @@ case "$1" in
   start)
     echo "Starting accessManager"
     # run application you want to start
+    source activate access_manager
     python /home/pi/accessManager/__init__.py &
     ;;
   stop)

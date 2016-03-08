@@ -4,10 +4,12 @@ Installing Application
 1. Update OS
 	$ sudo apt-get update
 
-2. Install PIP (Python package repo)
-	$ sudo apt-get install python-pip python-dev build-essential 
-	$ sudo pip install --upgrade pip 
-	$ sudo pip install --upgrade virtualenv
+2. Install miniconda
+	$ wgethttps://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh 
+    $ sudo sh ./Miniconda-latest-Linux-x86_64.sh
+    $ conda create -n access_manager python=3 numpy sklearn
+    $ conda install -c https://conda.anaconda.org/ericmjl rpi.gpio
+    $ conda install -c https://conda.anaconda.org/menpo opencv3
 
 3. Clone the 'accessManager' repository
 	$ cd /home/[desiredUserDir]/
