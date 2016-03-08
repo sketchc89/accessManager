@@ -1,5 +1,6 @@
 # External module imports
 import RPi.GPIO as GPIO
+from cam import *
 import time
 
 # Pin Definitons:
@@ -108,6 +109,8 @@ try:
             GPIO.output(doorBellBuzzerPin, GPIO.LOW)
         # END: Door Bell Button Presses
         
+        #Run face detection program prior to releasing door latch
+        DetectFaces()
         # Door Latch Release Button Presses
         if GPIO.input(butDoorRelease1Pin) == False and (doorRelease1PressLoopCount <= 0 or doorRelease1PressLoopCount >= doorReleasePressLoopMax): # button is released
             if GPIO.input(butDoorRelease1Pin) == False:
