@@ -3,6 +3,53 @@ import RPi.GPIO as GPIO
 from cam import *
 import time
 
+def Pressed(but_pin, loop_count, loop_max):
+    '''Check whether the button pin has been pressed and the loop is in a position to respond'''
+    return GPIO.input(but_pin) == False and (loop_count <= 0 or loop_count >= loop_max)
+
+
+def DoorBellPressed(but_pin, loop_count, blink_count, led_pin, buzzer_pin, loop_max):
+    ''''Check if the door bell was pressed and blink the LED if so'''
+    if Pressed(but_pin, loop_count, loop_max): 
+        print("Door Bell Pressed")
+        DetectFaces()
+        loop_count = 0
+    if loop_count >= 0
+        loop_count += 1
+    if loop_count == 1 or blink_count >= 0:
+        blink_count += 1
+        if blink_count <= 20:
+            GPIO.output(led_pin, GPIO.HIGH)
+        elif blink_count < 40:
+            GPIO.output(led_pin, GPIO.LOW)
+        else:
+            blink_count = 0
+        GPIO.output(buzzer_pin, GPIO.HIGH)
+    if loop_count > loop_max:
+        loop_count = -1
+        blink_count = -1
+        GPIO.output(led_pin, GPIO.LOW)
+    return loop_count, blink_count
+
+
+def LatchRelease(release_pin, led_pin, loop_count, loop_max):
+    ''''Check if the door latch was released and blink the LED if so'''
+    if Pressed(but_pin, loop_count, loop_max):
+        print("Latch Released")
+        loop_count = 0
+    if loop_count >= 0:
+        loop_count += 1
+
+    GPIO.output(release_pin, GPIO.HIGH)
+    GPIO.output(led_pin, GPIO.HIGH)
+
+    if loop_count >= loop_max:
+        loop_count = -1
+        GPIO.output(release_pin, GPIO.LOW)
+        GPIO.output(led_pin, GPIO.LOW)
+    return loop_count
+
+
 # Pin Definitons:
 butDoorBell1Pin = 6         # pin 31
 butDoorBell2Pin = 12        # pin 32
@@ -55,101 +102,25 @@ print("Program Started. Press CTRL+C to exit")
 try:
     while 1:
         # Door Bell Button Presses
-        # Door Bell 1 Button Press
-        if GPIO.input(butDoorBell1Pin) == False and (doorbell1PressLoopCount <= 0 or doorbell1PressLoopCount >= doorbellPressLoopMax): # button is pressed
-            print("Door Bell 1 Pressed")
-            doorbell1PressLoopCount = 0
-        
-        if doorbell1PressLoopCount >= 0:
-            doorbell1PressLoopCount = doorbell1PressLoopCount + 1
-            
-            if doorbell1PressLoopCount == 1 or doorbell1LedBlinkCount >= 0:
-                doorbell1LedBlinkCount = doorbell1LedBlinkCount + 1
-                if doorbell1LedBlinkCount <= 20:
-                    GPIO.output(doorBellLed1Pin, GPIO.HIGH)
-                elif doorbell1LedBlinkCount > 20 and doorbell1LedBlinkCount < 40:
-                    GPIO.output(doorBellLed1Pin, GPIO.LOW)
-                else:
-                    doorbell1LedBlinkCount = 0
-            
-            GPIO.output(doorBellBuzzerPin, GPIO.HIGH)
-            
-            if doorbell1PressLoopCount > doorbellPressLoopMax:
-                doorbell1PressLoopCount = -1
-                doorbell1LedBlinkCount = -1
-                GPIO.output(doorBellLed1Pin, GPIO.LOW)
-        # END: Door Bell 1 Button Press
-        
-        # Door Bell 2 Button Press
-        if GPIO.input(butDoorBell2Pin) == False and (doorbell2PressLoopCount <= 0 or doorbell2PressLoopCount >= doorbellPressLoopMax): # button is pressed
-            print("Door Bell 2 Pressed")
-            doorbell2PressLoopCount = 0
-        
-        if doorbell2PressLoopCount >= 0:
-            doorbell2PressLoopCount = doorbell2PressLoopCount + 1
-            
-            if doorbell2PressLoopCount == 1 or doorbell2LedBlinkCount >= 0:
-                doorbell2LedBlinkCount = doorbell2LedBlinkCount + 1
-                if doorbell2LedBlinkCount <= 20:
-                    GPIO.output(doorBellLed2Pin, GPIO.HIGH)
-                elif doorbell2LedBlinkCount > 20 and doorbell2LedBlinkCount < 40:
-                    GPIO.output(doorBellLed2Pin, GPIO.LOW)
-                else:
-                    doorbell2LedBlinkCount = 0
-            
-            GPIO.output(doorBellBuzzerPin, GPIO.HIGH)
-            
-            if doorbell2PressLoopCount > doorbellPressLoopMax:
-                doorbell2PressLoopCount = -1
-                doorbell2LedBlinkCount = -1
-                GPIO.output(doorBellLed2Pin, GPIO.LOW)
-        # END: Door Bell 2 Button Press
-        
+        doorbell1PressLoopCount, doorbell2LedBlinkCount = DoorBellPressed(butDoorBell1Pin, doorbell1PressLoopCount, 
+                                                                        doorbell1LedBlinkCount, doorBellLed1Pin, 
+                                                                        doorBellBuzzerPin, doorbellPressLoopMax)
+        doorbell2PressLoopCount, doorbell2LedBlinkCount = DoorBellPressed(butDoorBell2Pin, doorbell2PressLoopCount, 
+                                                                        doorbell2LedBlinkCount, doorBellLed2Pin, 
+                                                                        doorBellBuzzerPin, doorbellPressLoopMax)
+
         if doorbell1PressLoopCount == -1 and doorbell2PressLoopCount == -1:
             GPIO.output(doorBellBuzzerPin, GPIO.LOW)
         # END: Door Bell Button Presses
+
         
-        #Run face detection program prior to releasing door latch
-        DetectFaces()
         # Door Latch Release Button Presses
-        if GPIO.input(butDoorRelease1Pin) == False and (doorRelease1PressLoopCount <= 0 or doorRelease1PressLoopCount >= doorReleasePressLoopMax): # button is released
-            if GPIO.input(butDoorRelease1Pin) == False:
-                print("Door Release 1 Pressed")
-                doorRelease1PressLoopCount = 0
-        
-        if GPIO.input(butDoorRelease2Pin) == False and (doorRelease2PressLoopCount <= 0 or doorRelease2PressLoopCount >= doorReleasePressLoopMax): # button is released
-            if GPIO.input(butDoorRelease2Pin) == False:
-                print("Door Release 2 Pressed")
-                doorRelease2PressLoopCount = 0
-        
-        # Door Latch 1 Release Button Press
-        if doorRelease1PressLoopCount >= 0:
-            doorRelease1PressLoopCount = doorRelease1PressLoopCount + 1
-            
-            GPIO.output(doorRelease1Pin, GPIO.HIGH)
-            GPIO.output(doorReleaseLed1Pin, GPIO.HIGH)
-            
-            if doorRelease1PressLoopCount >= doorReleasePressLoopMax:
-                doorRelease1PressLoopCount = -1
-                GPIO.output(doorRelease1Pin, GPIO.LOW)
-                GPIO.output(doorReleaseLed1Pin, GPIO.LOW)
-        # END: Door Latch 1 Release Button Press
-        
-        # Door Latch 2 Release Button Press
-        if doorRelease2PressLoopCount >= 0:
-            doorRelease2PressLoopCount = doorRelease2PressLoopCount + 1
-            
-            GPIO.output(doorRelease2Pin, GPIO.HIGH)
-            GPIO.output(doorReleaseLed2Pin, GPIO.HIGH)
-            
-            if doorRelease2PressLoopCount >= doorReleasePressLoopMax:
-                doorRelease2PressLoopCount = -1
-                GPIO.output(doorRelease2Pin, GPIO.LOW)
-                GPIO.output(doorReleaseLed2Pin, GPIO.LOW)
-        # END: Door Latch 2 Release Button Press
-        # END: Door Latch Release Button Presses
-        
-        if doorRelease1PressLoopCount >= 0 or doorRelease2PressLoopCount >= 0 or doorbell1PressLoopCount >= 0 or doorbell2PressLoopCount >= 0:
+        doorRelease1PressLoopCount = LatchRelease(doorRelease1Pin, doorReleaseLed1Pin, 
+                                                  doorRelease1PressLoopCount, doorReleasePressLoopMax)
+        doorRelease2PressLoopCount = LatchRelease(doorRelease2Pin, doorReleaseLed2Pin, 
+                                                  doorRelease2PressLoopCount, doorReleasePressLoopMax)
+        if doorRelease1PressLoopCount >= 0 or doorRelease2PressLoopCount >= 0 or 
+           doorbell1PressLoopCount >= 0    or doorbell2PressLoopCount >= 0:
             time.sleep(0.01)
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     GPIO.cleanup() # cleanup all GPIO

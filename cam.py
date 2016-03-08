@@ -14,7 +14,7 @@ class FaceDetector:
                                                 flags = cv2.CASCADE_SCALE_IMAGE)
         return rects
 
-def CaptureFace():
+def CaptureFace(wait_time=1):
     face_cascade_path = './haarcascade_frontalface_default.xml'
     face_detect = FaceDetector(face_cascade_path)
     camera = cv2.VideoCapture(0)
@@ -22,7 +22,7 @@ def CaptureFace():
     rects = []
     padding = 30
     i = 0
-    while not rects and (datetime.datetime.now() - time_init < datetime.timedelta(seconds=5)):
+    while not rects and (datetime.datetime.now() - time_init < datetime.timedelta(seconds=wait_time)):
         (grabbed, frame) = camera.read()
         if not grabbed:
             break
