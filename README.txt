@@ -5,7 +5,7 @@ Installing Application
 	$ sudo apt-get update
 
 2. Install miniconda
-	$ wgethttps://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh 
+    $ wgethttps://repo.continuum.io/miniconda/Miniconda3-latest-Linux-armv7l.sh 
     $ sudo sh ./Miniconda-latest-Linux-x86_64.sh
     $ conda create -n access_manager python=3 numpy sklearn
     $ conda install -c https://conda.anaconda.org/ericmjl rpi.gpio
